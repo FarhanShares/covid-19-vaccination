@@ -11,29 +11,35 @@ return new class extends Migration
      */
     public function up(): void
     {
+        /**
+         * <Notes by Farhan Israq>
+         *
+         * Modified the typical default users table that is shipped with Laravel to suit our needs.
+         *
+         * We'll be using nid and date_of_birth to validate (simulated) whether a user can register
+         * or check his status. In real world we might want to enforce extra security measures,
+         * e.g. validation by OTP, keeping it just simple for our use case.
+         *
+         * The nid column has a unique index, which will also create a regular index. Similarly, the
+         * dob column has a regular index. This will give us faster status look-ups.
+         *
+         * The status and create_at columns are indexed too, mainly to facilitate a boost in
+         * scheduling process (handled by a scheduled job).
+         *
+         * We don't need the password field or email_verified_at sort of fields for our use case
+         * at the moment. Neither we'll be requiring password reset sort of features now.
+         */
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->integer('nid')->unique()->comment('National ID');
+            $table->date('dob')->index()->comment('Date of birth');
+            $table->string('name')->comment('Full name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
 
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
+            $table->enum('status', App\Support\Enums\VaccinationStatus::cases())->index();
 
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
+            $table->timestamp('created_at')->useCurrent()->index();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 
@@ -43,7 +49,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };
