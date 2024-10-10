@@ -28,7 +28,7 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
-        <!-- Email Address -->
+        <!-- Vaccine Center -->
         <div class="mt-4">
             <x-input-label for="vaccineCenter" :value="__('Choose Vaccine Center')" />
             <x-select-input name="vaccineCenter" id="vaccineCenter" wire:model='vaccineCenter' :data="$vaccineCenters" />
