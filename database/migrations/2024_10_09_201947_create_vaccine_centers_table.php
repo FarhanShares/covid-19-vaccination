@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->tinyText('address');
-            $table->smallInteger('daily_capacity'); // The max number of people this center can vaccinate daily
+            // The max number of people this center can vaccinate daily. Assuming the capacity is
+            // well within the range of what an unsigned small integer column can hold (up to 65535)
+            // and, can at least vaccinate 50 persons a day.
+            $table->smallInteger('daily_capacity')->unsigned()->default(50);
             $table->timestamps();
         });
     }
