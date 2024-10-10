@@ -34,7 +34,12 @@
 
         <!-- Email Address -->
         <div class="mt-4">
-            <x-bladewind::select name="vaccineCenter" :data="$vaccineCenters" />
+            <x-input-label for="vaccineCenter" :value="__('Choose Vaccine Center')" />
+
+            <x-select-input name="vaccineCenter" id="vaccineCenter" wire:model='vaccineCenter' :data="$vaccineCenters" />
+
+            <x-input-error :messages="$errors->get('vaccineCenter')" class="mt-2" />
+
         </div>
 
 
