@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ada3669d3e176cc1078491d863a44b59",
+    "content-hash": "3d98c82fcec0843f4555f261dcc1a678",
     "packages": [
         {
             "name": "brick/math",
@@ -1896,131 +1896,6 @@
                 }
             ],
             "time": "2024-10-01T12:40:06+00:00"
-        },
-        {
-            "name": "livewire/volt",
-            "version": "v1.6.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/livewire/volt.git",
-                "reference": "d09fdb4cb52c6ce821d255683195bb6d446fe141"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/livewire/volt/zipball/d09fdb4cb52c6ce821d255683195bb6d446fe141",
-                "reference": "d09fdb4cb52c6ce821d255683195bb6d446fe141",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "^10.38.2|^11.0",
-                "livewire/livewire": "^3.0",
-                "php": "^8.1"
-            },
-            "require-dev": {
-                "laravel/folio": "^1.1",
-                "mockery/mockery": "^1.6",
-                "orchestra/testbench": "^8.15.0|^9.0",
-                "pestphp/pest": "^2.9.5",
-                "phpstan/phpstan": "^1.10"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Livewire\\Volt\\VoltServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "files": [
-                    "functions.php"
-                ],
-                "psr-4": {
-                    "Livewire\\Volt\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                },
-                {
-                    "name": "Nuno Maduro",
-                    "email": "nuno@laravel.com"
-                }
-            ],
-            "description": "An elegantly crafted functional API for Laravel Livewire.",
-            "homepage": "https://github.com/livewire/volt",
-            "keywords": [
-                "laravel",
-                "livewire",
-                "volt"
-            ],
-            "support": {
-                "issues": "https://github.com/livewire/volt/issues",
-                "source": "https://github.com/livewire/volt"
-            },
-            "time": "2024-05-31T19:07:20+00:00"
-        },
-        {
-            "name": "mkocansey/bladewind",
-            "version": "v2.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mkocansey/bladewind.git",
-                "reference": "b6b7772ced615461d7a744581f322f55cee4e2e1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mkocansey/bladewind/zipball/b6b7772ced615461d7a744581f322f55cee4e2e1",
-                "reference": "b6b7772ced615461d7a744581f322f55cee4e2e1",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.3"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Mkocansey\\Bladewind\\BladewindServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Mkocansey\\Bladewind\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael K. Ocansey",
-                    "email": "mike@bladewindui.com"
-                }
-            ],
-            "description": "Laravel UI Components using TailwindCSS, Blade Templates and vanilla Javascript",
-            "keywords": [
-                "Ui Components",
-                "blade components",
-                "laravel",
-                "tailwindcss"
-            ],
-            "support": {
-                "issues": "https://github.com/mkocansey/bladewind/issues",
-                "source": "https://github.com/mkocansey/bladewind/tree/v2.7.0"
-            },
-            "time": "2024-09-28T20:31:47+00:00"
         },
         {
             "name": "monolog/monolog",
