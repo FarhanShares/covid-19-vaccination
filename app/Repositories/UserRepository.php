@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\User;
 use App\Jobs\StoreUserJob;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Auth\Events\Registered;
 use App\Support\Enums\VaccinationStatus;
 
 class UserRepository
@@ -122,6 +123,7 @@ class UserRepository
         if (!$this->existsInDB($user)) {
             $user->save();
             $this->pool($user);
+            event(new Registered($user));
         }
     }
 
