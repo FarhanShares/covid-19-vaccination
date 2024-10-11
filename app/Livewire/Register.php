@@ -124,7 +124,16 @@ class Register extends Component
     {
         $validated = $this->validate(
             rules: [
-                'nid'   => ['required', 'integer', 'regex:/^\d{13}$|^\d{17}$/', 'unique:users,nid'],
+                'nid'   => [
+                    'required',
+                    'integer',
+                    'regex:/^\d{13}$|^\d{17}$/',
+                    function ($attribute, $value, $fail) {
+                        if ((new UserRepository())->exists($value)) {
+                            $fail('The NID has already been registered.');
+                        }
+                    },
+                ],
                 'dob'   => ['required', 'date'],
                 'name'  => ['required', 'string', 'max:255'],
                 'email' => ['required', 'email:rfc,dns', 'max:255', 'unique:users,email'],
