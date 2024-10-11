@@ -20,7 +20,7 @@
                     </div>
 
                     <div class="w-full pt-3 sm:pt-5 lg:pt-0">
-                        <x-input-text class="w-full" />
+                        <x-form-search />
                     </div>
 
                 </div>
