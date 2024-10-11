@@ -32,7 +32,34 @@ class Register extends Component
     }
 
     /**
-     * Handle an incoming registration request.
+     * <<Notes by Farhan Israq>>
+     *
+     * Handle an incoming registration request efficiently.
+     *
+     * For a COVID-19 vaccination program app, the traffic pattern would typically be write-heavy
+     * at the beginning (due to user registrations) and then gradually shift towards being read-heavy
+     * (for users checking their vaccination status or appointment details).
+     *
+     * Creating a very fast-paced high-traffic 'registration' process for apps like Covid-19
+     * Vaccination Program can be streamlined with efficient database writes.
+     *
+     * We will implement the "Write-back cache" strategy where we store the data in cache storage first,
+     * later create the user in asynchronous job (we'll run jobs in batch for even more performant updates).
+     *
+     * One more reason of choosing "Write-back strategy" is because we have to notify the user at 9 PM,
+     * which means we certainly have time to do the actual registration process asynchronously.
+     *
+     * Write-back cache strategy has it's own limitations and implementation complexities.
+     *
+     * One of the added complexities is, if the user tries to re-register again, we must look-up
+     * in two places for user existence check: in users table and in cache storage. However, This
+     * can be easily resolved by implementing repository pattern.
+     *
+     * The other consideration is to have a persistent cache storage. This is out of the scope of
+     * the task and more suitable for the DevOps team to see what suits better. E.g. setting up
+     * regular backups for the cache storage, monitor any failures & recover it promptly when needed.
+     *
+     * The other option is to go for Write-through cache, but I don't want to go further on it.
      */
     public function register(): void
     {
@@ -42,27 +69,6 @@ class Register extends Component
          */
         $validatedData = $this->getValidatedData();
 
-        /**
-         * <<Notes by Farhan Israq>>
-         *
-         * Creating a very fast-paced high-traffic 'registration' process for apps like Covid-19
-         * Vaccination Program can be streamlined with efficient database writes.
-         *
-         * We will follow the "Write-back cache" strategy where we store the data in cache storage first,
-         * later create the user in asynchronous job (we'll run jobs in batch for even more performant updates).
-         *
-         * Write-back cache strategy has it's own limitations and implementation complexities.
-         *
-         * One of the added complexities is, if the user tries to re-register again, we must look-up
-         * in two places for user existence check: in users table and in cache storage. This can be
-         * easily resolved by using a repository.
-         *
-         * The other consideration is to have a persistent cache storage. This is out of the scope of
-         * the task and more suitable for the DevOps team to see what suits better. E.g. setting up
-         * regular backups for the cache storage, monitor any failures & recover it promptly when needed.
-         *
-         * The other option is to go for Write-through cache, but I don't want to go further on it.
-         */
         // TODO use write-back cache strategy
         $user = User::create($validatedData);
         // TODO use repository
