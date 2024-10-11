@@ -65,15 +65,7 @@ class Register extends Component
          */
         // TODO use write-back cache strategy
         $user = User::create($validatedData);
-
-        /**
-         * Write-through cache
-         *
-         * Immediately cache user data and invalidate only when status is changed to scheduled
-         * or vaccinated. The cache invalidation is handled by events.
-         *
-         * To make it fail-safe, a cron job is scheduled too.
-         */
+        // TODO use repository
         Cache::rememberForever("user:{$user->nid}", fn() => $user);
 
         event(new Registered($user));
@@ -101,16 +93,20 @@ class Register extends Component
     }
 
     /**
+     * <<Notes by Farhan Israq>>
+     *
      * Run validation and return with validated data.
      *
-     * We could have also used a Request class, or even uses spatie/laravel-data class,
-     * just keeping it simple here and, following the laravel volt's way of doing things.
+     * We could have also used a Controller / Request class, or even uses spatie/laravel-data class,
+     * just keeping things simple here.
+     *
+     * We could have even added custom validation rules e.g. to check if 'dob and nid pair' is valid,
+     * again, for the sake of simplicity (and, also not the scope of the current project), skipping it.
      *
      * @return array
      */
     protected function getValidatedData(): array
     {
-        // Here we may even add custom validation rules e.g. to check if dob and nid pair is valid
         $validated = $this->validate(
             rules: [
                 'nid'   => ['required', 'integer', 'regex:/^\d{13}$|^\d{17}$/', 'unique:users,nid'],
@@ -119,7 +115,7 @@ class Register extends Component
                 'email' => ['required', 'email:rfc,dns', 'max:255', 'unique:users,email'],
                 'vaccineCenter' => ['required', 'integer', Rule::in($this->getVaccineCenterIds())],
             ],
-            // Only adding the custom validation failed messages where necessary.
+            // Only adding the custom messages where necessary.
             messages: [
                 'nid.required' => 'The NID field is required.',
                 'nid.regex'    => 'The NID must be either a valid 13 or 17-digit number.',
