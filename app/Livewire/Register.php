@@ -10,8 +10,6 @@ use App\Support\Enums\VaccinationStatus;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\URL;
 
 class Register extends Component
 {
@@ -62,6 +60,15 @@ class Register extends Component
      * regular backups for the cache storage, monitor any failures & recover it promptly when needed.
      *
      * The other option is to go for Write-through cache, but I don't want to go further on it.
+     *
+     * But this brings the question, why didn't I just simply dispatched a job? Good catch. The simple
+     * answer to that is to prevent the user from re-registering or give him immediate result upon checking
+     * his appointment (scheduled) date.
+     *
+     * We never know with a very high traffic, there might be a long running process and the user data
+     * is yet to be stored after a long delay! We'll eventually get some curious users who try to
+     * re-submit registration form or, he wants to check his appointment status (scheduled data) just
+     * right after registering himself! Yes, I'm solving that issue with Write-back caching strategy.
      */
     public function register(): void
     {
