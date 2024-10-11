@@ -5,11 +5,13 @@ namespace App\Livewire;
 use App\Models\User;
 use Livewire\Component;
 use App\Models\VaccineCenter;
+use App\Repositories\UserRepository;
 use App\Support\Enums\VaccinationStatus;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\URL;
 
 class Register extends Component
 {
@@ -20,7 +22,7 @@ class Register extends Component
     public int $vaccineCenter;
     public array $vaccineCenters;
 
-    public function mount()
+    public function mount(): void
     {
         // For efficiency
         // TODO check if cache exists, separate this maybe, handle invalidation
@@ -28,7 +30,7 @@ class Register extends Component
             return VaccineCenter::query()->select('id', 'name')->pluck('name', 'id')->toArray();
         });
 
-        $this->vaccineCenters   = Cache::get('vc_options');
+        $this->vaccineCenters = Cache::get('vc_options');
     }
 
     /**
@@ -69,15 +71,15 @@ class Register extends Component
          */
         $validatedData = $this->getValidatedData();
 
-        // TODO use write-back cache strategy
-        $user = User::create($validatedData);
-        // TODO use repository
-        Cache::rememberForever("user:{$user->nid}", fn() => $user);
+        // Create a model instance form the validated data
+        $user = new User($validatedData);
 
-        event(new Registered($user));
+        // The user repository handles most of the Write-back strategy
+        (new UserRepository())->save($user);
 
-        // TODO add a flash message that registration is complete and user will be notified a day earlier
-        $this->redirect(route('home', absolute: false), navigate: true);
+        // Redirect the user with a registration completed notification
+        session()->flash(UserRepository::REGISTRATION_COMPLETED_SESSION, $user->nid);
+        $this->redirect(route(name: 'success', absolute: false), navigate: true);
     }
 
     public function render()

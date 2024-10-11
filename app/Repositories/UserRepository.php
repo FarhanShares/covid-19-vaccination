@@ -10,6 +10,14 @@ use App\Support\Enums\VaccinationStatus;
 
 class UserRepository
 {
+    /**
+     * REGISTRATION_COMPLETED_SESSION should flash a session containing User NID
+     * once the registration has been completed successfully.
+     *
+     * @var string the session key name for successful registration
+     */
+    public const REGISTRATION_COMPLETED_SESSION = 'REGISTRATION_COMPLETED';
+
     // first check in cache storage, the check in db
     // when checked in db, as not cached, cache it
     public function findByNid(int $nid): ?User
@@ -70,6 +78,8 @@ class UserRepository
 
     public function save(User $user)
     {
+        // todo: check if user exists already
+
         // Save to cache storage
         $this->pool($user);
 
