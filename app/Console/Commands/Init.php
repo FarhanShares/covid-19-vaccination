@@ -27,8 +27,8 @@ class Init extends Command
      */
     public function handle()
     {
-        $this->info('Starting a fresh migration...');
-        Artisan::call('migration:fresh --force');
+        $this->info('Starting with a fresh migration...');
+        Artisan::call('migrate:fresh --force');
         $this->info(Artisan::output());
 
         $this->info('Seeding 20 vaccine centers with random data...');
