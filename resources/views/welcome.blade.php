@@ -17,13 +17,14 @@
                         <p class="mt-4 text-sm/relaxed">
                             Look-up your registration or vaccination status by your NID.
                         </p>
-                    </div>
 
-                    <div class="w-full pt-3 sm:pt-5 lg:pt-0">
-                        <x-form-search />
-                    </div>
+                        <div class="w-full mt-5 sm:mt-8">
+                            <x-form-search />
+                        </div>
 
+                    </div>
                 </div>
+
             </div>
         </div>
 

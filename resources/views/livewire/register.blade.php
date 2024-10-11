@@ -1,4 +1,4 @@
-<x-section class="max-w-4xl mx-auto">
+<x-section class="max-w-xl mx-auto">
     <form wire:submit="register" class="w-full">
         <!-- Name -->
         <div>
@@ -31,7 +31,7 @@
         <!-- Vaccine Center -->
         <div class="mt-4">
             <x-input-label for="vaccineCenter" :value="__('Choose Vaccine Center')" />
-            <x-input-select name="vaccineCenter" id="vaccineCenter" wire:model='vaccineCenter' :data="$vaccineCenters" />
+            <x-input-select name="vaccineCenter" id="vaccineCenter" wire:model='vaccineCenter' class="block w-full mt-1" :data="$vaccineCenters" />
             <x-input-error :messages="$errors->get('vaccineCenter')" class="mt-2" />
         </div>
 
