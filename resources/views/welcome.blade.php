@@ -18,6 +18,11 @@
                             Look-up your registration or vaccination status by your NID.
                         </p>
                     </div>
+
+                    <div class="w-full pt-3 sm:pt-5 lg:pt-0">
+                        <x-input-text class="w-full" />
+                    </div>
+
                 </div>
             </div>
         </div>

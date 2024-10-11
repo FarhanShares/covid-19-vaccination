@@ -1,39 +1,38 @@
-<div>
-    <form wire:submit="register">
+<x-section class="max-w-4xl mx-auto">
+    <form wire:submit="register" class="w-full">
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
-            <x-text-input wire:model="name" id="name" class="block w-full mt-1" type="text" name="name" required autofocus autocomplete="name" />
+            <x-input-text wire:model="name" id="name" class="block w-full mt-1" type="text" name="name" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <!-- NID -->
         <div class="mt-4">
             <x-input-label for="nid" :value="__('National ID')" />
-            <x-text-input wire:model="nid" id="nid" class="block w-full mt-1" type="number" name="nid" required autocomplete="nid" />
+            <x-input-text wire:model="nid" id="nid" class="block w-full mt-1" type="number" name="nid" required autocomplete="nid" />
             <x-input-error :messages="$errors->get('nid')" class="mt-2" />
         </div>
 
         <!-- DOB -->
         <div class="mt-4">
             <x-input-label for="dob" :value="__('Date of birth')" />
-            <x-text-input wire:model="dob" id="dob" class="block w-full mt-1" type="date" name="dob" required autocomplete="date_of_birth" />
+            <x-input-text wire:model="dob" id="dob" class="block w-full mt-1" type="date" name="dob" required autocomplete="date_of_birth" />
             <x-input-error :messages="$errors->get('dob')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="email" id="email" class="block w-full mt-1" type="email" name="email" required autocomplete="email" />
+            <x-input-text wire:model="email" id="email" class="block w-full mt-1" type="email" name="email" required autocomplete="email" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Vaccine Center -->
         <div class="mt-4">
             <x-input-label for="vaccineCenter" :value="__('Choose Vaccine Center')" />
-            <x-select-input name="vaccineCenter" id="vaccineCenter" wire:model='vaccineCenter' :data="$vaccineCenters" />
+            <x-input-select name="vaccineCenter" id="vaccineCenter" wire:model='vaccineCenter' :data="$vaccineCenters" />
             <x-input-error :messages="$errors->get('vaccineCenter')" class="mt-2" />
-
         </div>
 
 
@@ -42,10 +41,10 @@
             {{ __('Already registered?') }}
             </a> --}}
 
-            <x-primary-button class="ms-4">
+            <x-button-primary class="ms-4">
                 {{ __('Register') }}
-            </x-primary-button>
+            </x-button-primary>
         </div>
     </form>
 
-</div>
+</x-section>
