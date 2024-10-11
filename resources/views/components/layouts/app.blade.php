@@ -13,17 +13,32 @@
 
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <styles>
+        {{-- --}}
+    </styles>
 </head>
 <body class="font-sans antialiased text-gray-900">
-    <div class="flex flex-col items-center min-h-screen pt-6 bg-gray-100 sm:justify-center sm:pt-0 dark:bg-gray-900">
-        <div>
-            <a href="/" wire:navigate>
-                <x-application-logo class="w-20 h-20 text-gray-500 fill-current" />
-            </a>
-        </div>
+    <img class="hidden dark:block absolute -left-20 top-0 max-w-[877px] max-h-screen" src="https://laravel.com/assets/img/welcome/background.svg" />
+    <div class="absolute inset-0 dark:hidden bg-gradient-to-r from-rose-100 to-teal-100"></div>
 
-        <div class="w-full px-6 py-4 mt-6 bg-white shadow-md sm:max-w-md dark:bg-gray-800 sm:rounded-lg">
-            {{ $slot }}
+    <div class="w-full bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+        <div class="w-full relative min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
+            <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
+
+                <header class="flex items-center justify-center">
+                    <a href="/" wire:navigate>
+                        <x-application-logo class="w-20 h-20 text-gray-500 fill-current" />
+                    </a>
+                </header>
+
+                <main class="mt-10">
+                    {{ $slot }}
+                </main>
+
+                <footer class="py-16 text-sm text-center text-black dark:text-white/70">
+                    Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }}) © Farhan Israq - All rights reserved.
+                </footer>
+            </div>
         </div>
     </div>
     @livewireScripts
