@@ -34,7 +34,7 @@ class VaccineCenterDailyUsage extends Model
         ];
     }
 
-    public function getUsage(
+    public static function getUsage(
         int|VaccineCenter $vaccineCenter,
         ?Carbon $date = null,
     ) {
@@ -47,26 +47,20 @@ class VaccineCenterDailyUsage extends Model
         ])->first();
     }
 
-    public function getRemainingSlots(
+    public static function getRemainingSlots(
         int|VaccineCenter $vaccineCenter,
         ?Carbon $date = null,
-    ) {
+    ): int {
         if (is_int($vaccineCenter)) {
             $vaccineCenter = VaccineCenter::find($vaccineCenter);
         }
 
-        if (!$vaccineCenter) {
-            throw new \Exception('Vaccine center not found.');
-        }
-
-        $capacity = $vaccineCenter->daily_capacity;
-
+        $capacity = $vaccineCenter?->daily_capacity;
         if (!$capacity) {
             return 0;
         }
 
-        $date ??= Carbon::now();
-        $dailyUsage = $this->getUsage($vaccineCenter, $date);
+        $dailyUsage = self::getUsage($vaccineCenter, $date);
         if (is_null($dailyUsage)) {
             return $capacity;
         }
@@ -75,7 +69,7 @@ class VaccineCenterDailyUsage extends Model
     }
 
 
-    public function incrementUsage(
+    public static function incrementUsage(
         int|VaccineCenter $vaccineCenter,
         ?Carbon $date = null,
         int $amount = 1
