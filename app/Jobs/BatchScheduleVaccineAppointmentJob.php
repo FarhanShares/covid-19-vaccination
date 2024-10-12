@@ -15,6 +15,7 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
     use Queueable;
 
     protected UserRepository $userRepository;
+    protected BookingService $bookingService;
 
     /**
      * Create a new job instance.
@@ -23,6 +24,7 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
         public int $batchSize = 100,
     ) {
         $this->userRepository = new UserRepository();
+        $this->bookingService = new BookingService();
     }
 
     /**
@@ -31,10 +33,9 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
     public function handle(): void
     {
         $users = $this->userRepository->unappointed($this->batchSize);
-        $bookingService = new BookingService();
 
         foreach ($users as $user) {
-            $appointmentDate = $bookingService->findDate($user->vaccineCenter);
+            $appointmentDate = $this->bookingService->findDate($user->vaccineCenter);
 
             $appointment = VaccineAppointment::create([
                 'date'              => $appointmentDate,
@@ -50,38 +51,13 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
             );
 
             // Increment the vaccine center usage counter in Redis for efficiency
-            $bookingService->useDate(
+            $this->bookingService->useDate(
                 date: $appointment->date,
                 vaccineCenterId: $user->vaccine_center_id,
             );
         }
 
         // After processing all users, batch update the VaccineCenterDailyUsage table
-        $bookingService->flush();
+        $this->bookingService->flush();
     }
 }
-
-
-// Bulk insert appointment data
-// // Calculate usage counts for each vaccine center
-// $groupedUsage = $usageCounter->groupBy(['vaccine_center_id', 'date'])->map(function ($group) {
-//     return [
-//         'date'  => $group->date,
-//         'count' => $group->count(),
-//     ];
-// });
-
-// // Update vaccine center usage for the scheduled dates
-// foreach ($groupedUsage as $centerId => $item) {
-//     VaccineCenterDailyUsage::incrementUsage(
-//         date: Carbon::parse($item['date']),
-//         amount: $item['count'],
-//         vaccineCenter: $centerId,
-//     );
-// }
-
-// $usageCounter = collect([]);
-// $usageCounter->push([
-//     'date'              => $appointmentDate,
-//     'vaccine_center_id' => $user->vaccine_center_id,
-// ]);
