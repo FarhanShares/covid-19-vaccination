@@ -92,9 +92,10 @@ class UserRepository
      *
      * @param int|\App\Models\User $user Integer NID or User Model
      * @param \App\Support\Enums\VaccinationStatus $status
+     * @param int $appointmentId
      * @return void
      */
-    public function updateStatus(int|User $user, VaccinationStatus $status): void
+    public function updateStatus(int|User $user, VaccinationStatus $status, int $appointmentId): void
     {
         if (is_int($user)) {
             $user = $this->findByNid($user);
@@ -102,11 +103,21 @@ class UserRepository
 
         if ($user) {
             $user->status = $status->value;
+            $user->vaccine_appointment_id = $appointmentId;
             $user->save(); // Save to DB
 
             // Refresh the cache with the updated status
             $this->pool($user);
         }
+    }
+
+    public function unappointed(int $limit = 100)
+    {
+        return User::whereNull(columns: 'vaccine_appointment_id')
+            ->with('vaccineCenter:id,daily_capacity')
+            ->orderBy('created_at',  'asc') // First come, first served
+            ->limit($limit)
+            ->get();
     }
 
     /**
