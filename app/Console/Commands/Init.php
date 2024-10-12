@@ -28,6 +28,8 @@ class Init extends Command
      */
     public function handle()
     {
+        Artisan::call('optimize:clear');
+
         $this->info('Starting with a fresh migration...');
         Artisan::call('migrate:fresh --force');
         $this->info(Artisan::output());
@@ -37,5 +39,8 @@ class Init extends Command
 
         $this->info('Seeding 50 users with random data...');
         User::factory()->count(50)->create();
+
+
+        // Artisan::call('optimize');
     }
 }
