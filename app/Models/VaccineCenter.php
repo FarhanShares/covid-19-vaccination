@@ -25,6 +25,18 @@ class VaccineCenter extends Model
         'daily_capacity',
     ];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'daily_capacity' => 'int',
+        ];
+    }
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
