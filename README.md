@@ -12,3 +12,8 @@ We have the following tables:
     id,vaccine_center_id,usage_counter
 
 All tables have created_at and updated_at columns.
+
+TODO:
+* appointment
+* notification
+* improvements
