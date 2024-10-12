@@ -50,15 +50,28 @@ class VaccineCenterDailyUsage extends Model
     public function getRemainingSlots(
         int|VaccineCenter $vaccineCenter,
         ?Carbon $date = null,
-    ): int {
-        $capacity = $this->vaccineCenter->daily_capacity;
-        $dailyUsage = $this->getUsage($vaccineCenter, $date);
+    ) {
+        if (is_int($vaccineCenter)) {
+            $vaccineCenter = VaccineCenter::find($vaccineCenter);
+        }
 
-        if (!$dailyUsage) {
+        if (!$vaccineCenter) {
+            throw new \Exception('Vaccine center not found.');
+        }
+
+        $capacity = $vaccineCenter->daily_capacity;
+
+        if (!$capacity) {
+            return 0;
+        }
+
+        $date ??= Carbon::now();
+        $dailyUsage = $this->getUsage($vaccineCenter, $date);
+        if (is_null($dailyUsage)) {
             return $capacity;
         }
 
-        return (int) $capacity - $dailyUsage->usage_counter;
+        return (int) $capacity - $dailyUsage->usage_count;
     }
 
 
