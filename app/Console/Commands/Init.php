@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use App\Models\VaccineCenter;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -33,5 +34,8 @@ class Init extends Command
 
         $this->info('Seeding 20 vaccine centers with random data...');
         VaccineCenter::factory()->count(20)->create();
+
+        $this->info('Seeding 50 users with random data...');
+        User::factory()->count(50)->create();
     }
 }
