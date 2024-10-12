@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\VaccineCenter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Number;
 use Illuminate\Support\Str;
 
 /**
@@ -23,23 +25,19 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        // Todo update user factory
+        $nid = fake()->randomDigitNotZero() * 100_000_000_0000
+            + fake()->randomNumber(9); // ensure a 13 digit random number
+
+        $vid = VaccineCenter::inRandomOrder()->first()->id
+            ?? VaccineCenter::factory()->create()->id; // ensure a vaccine center id
+
         return [
+            'nid' => $nid,
+            'dob' => fake()->dateTime(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'vaccine_center_id' => $vid,
+            'vaccine_appointment_id' => null,
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn(array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 }

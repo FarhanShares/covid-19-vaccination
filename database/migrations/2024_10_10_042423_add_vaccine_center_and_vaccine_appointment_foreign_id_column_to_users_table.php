@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\VaccineAppointment;
 use App\Models\VaccineCenter;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,6 +14,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->foreignIdFor(VaccineAppointment::class)
+                ->after('status')
+                ->nullable() // will be assigned later by system
+                ->constrained()
+                ->cascadeOnDelete();
+
             $table->foreignIdFor(VaccineCenter::class)
                 ->after('status')
                 ->constrained()
@@ -26,7 +33,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['vaccine_center_id']);
+            $table->dropForeign(['vaccine_center_id', 'vaccine_appointment_id']);
         });
     }
 };
