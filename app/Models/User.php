@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Support\Enums\VaccinationStatus;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -25,6 +26,7 @@ class User extends Authenticatable
         'email',
         'status',
         'vaccine_center_id',
+        'vaccine_appointment_id',
     ];
 
     /**
@@ -47,5 +49,15 @@ class User extends Authenticatable
         return [
             'status' => VaccinationStatus::class,
         ];
+    }
+
+    public function vaccineCenter(): BelongsTo
+    {
+        return $this->belongsTo(VaccineCenter::class);
+    }
+
+    public function vaccineAppointment(): HasOne
+    {
+        return $this->hasOne(VaccineAppointment::class);
     }
 }

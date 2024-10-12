@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Support\Enums\AppointmentStatus;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Support\Enums\AppointmentStatus;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class VaccineAppointment extends Model
 {
@@ -32,5 +33,15 @@ class VaccineAppointment extends Model
         return [
             'status' => AppointmentStatus::class,
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function vaccineCenter(): BelongsTo
+    {
+        return $this->belongsTo(VaccineCenter::class);
     }
 }
