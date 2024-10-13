@@ -44,7 +44,7 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
             $appointment = VaccineAppointment::create([
                 'date'              => $appointmentDate,
                 'user_id'           => $user->id,
-                'vaccine_center_id' => $user->vaccine_center_id,
+                'vaccine_center_id' => $user->vaccine_center_id, // maybe we don't even need this
                 'status'            => AppointmentStatus::SCHEDULED,
             ]);
 
@@ -52,10 +52,11 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
             $this->userRepository->updateStatus(
                 user: $user,
                 status: VaccinationStatus::SCHEDULED,
-                appointmentId: $appointment->id,
+                appointmentId: $appointment->id, // maybe we don't even need this
             );
 
-            // Increment the vaccine center usage counter in Redis for efficiency
+            // Notify the booking service that we have used the date
+            // which it just curated for us.
             $this->bookingService->useDate(
                 date: $appointment->date,
                 vaccineCenterId: $user->vaccine_center_id,
