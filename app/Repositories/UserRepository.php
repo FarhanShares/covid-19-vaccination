@@ -8,18 +8,23 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Auth\Events\Registered;
 use App\Support\Enums\VaccinationStatus;
 
+/**
+ * The class makes use of Cache for better efficiency, a performant in-memory cache storage
+ * i.e. Redis will significantly improve the performance. Hence, ensure to configure it.
+ */
 class UserRepository
 {
     /**
-     * REGISTRATION_COMPLETED_SESSION should flash a session containing User NID
-     * once the registration has been completed successfully.
+     * A session (key: REGISTRATION_COMPLETED_SESSION) should be flashed containing User NID
+     * once the registration has been completed successfully. This is primarily used
+     * for displaying a welcome screen / notification to the new user.
      *
      * @var string the session key name for successful registration
      */
     public const REGISTRATION_COMPLETED_SESSION = 'REGISTRATION_COMPLETED';
 
     // first check in cache storage, the check in db
-    // when checked in db, as not cached, cache it
+    // when checked in db, if not cached, cache it
     public function findByNid(int $nid): ?User
     {
         $cacheKey = self::getCacheKey($nid);
@@ -111,10 +116,17 @@ class UserRepository
         }
     }
 
+    /**
+     * Get the users collection who haven't yet appointed a schedule for vaccination.
+     *
+     * @param int $limit
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function unappointed(int $limit = 100)
     {
-        return User::whereNull(columns: 'vaccine_appointment_id')
+        return User::query()
             ->with('vaccineCenter:id,daily_capacity')
+            ->where('status', VaccinationStatus::NOT_SCHEDULED->value)
             ->orderBy('created_at',  'asc') // First come, first served
             ->limit($limit)
             ->get();
