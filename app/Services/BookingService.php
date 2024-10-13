@@ -25,7 +25,7 @@ class BookingService
             ? VaccineCenter::find($vaccineCenter)
             : $vaccineCenter;
 
-        // Get the current date and set up a date object to check the next available appointment date
+        // Get the current date and set up a date object to check the closest available appointment date
         $nextDate = Carbon::now();
 
         /**
@@ -38,7 +38,7 @@ class BookingService
 
         // Loop to find the next available date
         do {
-            // Skip weekends, set APP_TIMEZONE="Asia/Dhaka" in env var to use Bangladeshi local time
+            // Skip weekends
             if ($this->isWeekend($nextDate)) {
                 $nextDate->addDay();
                 continue;
@@ -59,22 +59,40 @@ class BookingService
         } while (true);
     }
 
-    // Increment the vaccine center usage counter as Redis data for efficiency
-    // Later in flush method, the count will be persisted in batch and redis data will be cleared
+    //
+    //
+    /**
+     * UseDate increases the "vaccine center usage count" which is stored as Redis data for efficiency.
+     * Later in flush method, the count can be persisted in batch and, the Redis data will be flushed.
+     *
+     * @param \Illuminate\Support\Carbon $date
+     * @param int $vaccineCenterId
+     * @return void
+     */
     public function useDate(
         Carbon $date,
         int $vaccineCenterId,
     ): void {
         $key = $this->getDailyUsageKey($date, $vaccineCenterId);
 
-        // Though we do flush, but, maybe we can even set a 3 days ttl for the key.
-        // the ttl value should be based on server config, if we are confident that the server can
-        // process this job without exceeding 3 days, that's fine. Otherwise increase or, do not even set it.
+        /**
+         * Though we do flush, but, we can even set a 3 days ttl for the key. The ttl value should be
+         * based on server config, if we are confident that the server can process this job without
+         * exceeding 3 days, that's fine. Otherwise increase it or, do not even set it.
+         *
+         * We are skipping it now and relying on flush method do it's job.
+         */
         Redis::incr($key, 1);
     }
 
-    // After processing all users, batch update the VaccineCenterDailyUsage table
-    // and clear all temporary data
+
+    /**
+     * After processing all users in the batch, flush to persist all necessary data
+     * from temporary storage to permanent storage and clear the temporary data too.
+     *
+     * @param bool $persist
+     * @return void
+     */
     public function flush(bool $persist = true): void
     {
         // Get all vaccine center keys for this batch from Redis
@@ -90,7 +108,7 @@ class BookingService
             $usageCount = Redis::get($key) ?? 0;
 
             if ($persist) {
-                // Persist the changes / count table in the database
+                // Persist the changes (count) in the database
                 VaccineCenterDailyUsage::incrementUsage(
                     date: Carbon::parse($date),
                     amount: (int) $usageCount,
@@ -104,6 +122,13 @@ class BookingService
         }
     }
 
+    /**
+     * Get the key in a definite format. Used as the in-memory storage key.
+     *
+     * @param \Illuminate\Support\Carbon $date
+     * @param int $vaccineCenterId
+     * @return string
+     */
     public function getDailyUsageKey(
         Carbon $date,
         int $vaccineCenterId,
@@ -112,6 +137,14 @@ class BookingService
         return "$this->uniqueId:$vaccineCenterId:$date";
     }
 
+    /**
+     * Get the total used slots for a date in a particular vaccine center. This considers the
+     * in-memory counts by the BookingService too.
+     *
+     * @param \Illuminate\Support\Carbon $date
+     * @param int $vaccineCenterId
+     * @return int
+     */
     public function getDailyUsageTotal(
         Carbon $date,
         int $vaccineCenterId,
@@ -120,10 +153,15 @@ class BookingService
         $redisKey = $this->getDailyUsageKey($date, $vaccineCenterId);
         $redisAppointmentsForDate = Redis::get($redisKey) ?? 0;
 
-        // Retrieve and cache the count from DB to improve performance, use in-memory cache driver i.e. Redis
-        // for efficiency and scalability.
-        // the ttl value should be based on server config, if we are confident that the server can
-        // process this job without exceeding 3 days, that's fine. Otherwise increase or, do not even set it.
+        /**
+         * Retrieve and cache the count from DB to improve performance, use an in-memory cache driver
+         * i.e. Redis for better efficiency and scalability.
+         *
+         * The TTL value should be based on server config, if we are confident that the server can
+         * process this job without exceeding the TTL value, we're good to go.
+         *
+         * Otherwise increase it or, do not even set it.
+         */
         $dbUsage = Cache::remember(
             "db:$redisKey",
             now()->addDays(3),
@@ -139,8 +177,13 @@ class BookingService
         return (int) $redisAppointmentsForDate + (int) $dbAppointmentsForDate;
     }
 
-    // Helper function to check if a date is a weekend
-    // Set APP_TIMEZONE="Asia/Dhaka" in env var to use Bangladeshi local time
+    /**
+     * Helper function to check if a date is a weekend. This uses the UTC or the Global Carbon
+     * Timezone settings or env vars in consideration.
+     *
+     * @param \Illuminate\Support\Carbon $date
+     * @return bool
+     */
     public function isWeekend(Carbon $date): bool
     {
         return in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY]);
