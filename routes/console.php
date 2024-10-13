@@ -10,5 +10,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::job(new BatchScheduleVaccineAppointmentJob(5))
+// Increase the batch size as needed or, as the server can handle
+// This determines the no of users to be appointed a vaccination schedule in a batch
+Schedule::job(new BatchScheduleVaccineAppointmentJob(batchSize: 250))
     ->everyTwoSeconds();
