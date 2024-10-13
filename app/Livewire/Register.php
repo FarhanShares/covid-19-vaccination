@@ -142,7 +142,7 @@ class Register extends Component
                         }
                     },
                 ],
-                'dob'   => ['required', 'date'],
+                'dob'   => ['required', 'date'], // purposefully skipped other potential validations
                 'name'  => ['required', 'string', 'max:255'],
                 'email' => ['required', 'email:rfc,dns', 'max:255', 'unique:users,email'],
                 'vaccineCenter' => ['required', 'integer', Rule::in($this->getVaccineCenterIds())],
