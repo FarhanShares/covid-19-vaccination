@@ -23,8 +23,16 @@ class UserRepository
      */
     public const REGISTRATION_COMPLETED_SESSION = 'REGISTRATION_COMPLETED';
 
-    // first check in cache storage, the check in db
-    // when checked in db, if not cached, cache it
+
+    /**
+     * Find a User by his or her NID
+     *
+     * It first checks in pool, then in db.
+     * If checked in db, if not pooled, pools.
+     *
+     * @param int $nid
+     * @return mixed
+     */
     public function findByNid(int $nid): ?User
     {
         $cacheKey = self::getCacheKey($nid);
@@ -43,6 +51,12 @@ class UserRepository
         return $user;
     }
 
+    /**
+     * Check the user's existence in the Pool or DB.
+     *
+     * @param int|\App\Models\User $user
+     * @return bool
+     */
     public function exists(int|User $user): bool
     {
         $nid = $user instanceof User ? $user->id : $user;
@@ -50,6 +64,13 @@ class UserRepository
         return !!$this->findByNid($nid);
     }
 
+    /**
+     * Check the user's existence in DB
+     *
+     * @param int|\App\Models\User $user
+     * @param bool $useCache
+     * @return bool
+     */
     public function existsInDB(int|User $user, bool $useCache = false): bool
     {
         $nid  = $user instanceof User ? $user->id : $user;
@@ -66,7 +87,14 @@ class UserRepository
         return false;
     }
 
-    public function existsInCache(int|User $user, bool $useCache = false): bool
+    /**
+     * Check the user's existence in pool
+     *
+     * @param int|\App\Models\User $user
+     * @param bool $useCache
+     * @return bool
+     */
+    public function existsInPool(int|User $user, bool $useCache = false): bool
     {
         $cacheKey = self::getCacheKey($user);
 
@@ -81,9 +109,18 @@ class UserRepository
         return true;
     }
 
+    /**
+     * Save a user upon registering
+     *
+     * @param \App\Models\User $user
+     * @return void
+     */
     public function save(User $user)
     {
-        // todo: check if user exists already
+        if ($this->existsInDB($user)) {
+            $this->pool($user);
+            return;
+        }
 
         // Save to cache storage
         $this->pool($user);
@@ -93,11 +130,10 @@ class UserRepository
     }
 
     /**
-     * Update the user status both in the DB and the Cache storage
+     * Update the user status both in the DB and the Cache storage.
      *
      * @param int|\App\Models\User $user Integer NID or User Model
      * @param \App\Support\Enums\VaccinationStatus $status
-     * @param int $appointmentId
      * @return void
      */
     public function updateStatus(
@@ -115,6 +151,27 @@ class UserRepository
             // Refresh the cache with the updated status
             $this->pool($user);
         }
+    }
+
+    /**
+     * Update users' status in batch, both in the DB and the Cache storage.
+     *
+     * @param int|\App\Models\User $user Integer NID or User Model
+     * @param \App\Support\Enums\VaccinationStatus $status
+     * @return void
+     */
+    public function updateManyStatus(
+        array $ids,
+        VaccinationStatus $status,
+    ): void {
+        // Update the user status
+        User::whereIn('id', $ids)->update(['status' => $status->value]);
+
+        // Refresh the cache pool
+        $users = User::whereIn('id', $ids)->get();
+        $users->each(function (User $user) use ($status) {
+            $this->pool($user);
+        });
     }
 
     /**
@@ -161,9 +218,17 @@ class UserRepository
         }
     }
 
-    // Cache pool, all caching of User model should be through this method
-    // if the status is VaccinationStatus::vaccinated, limit the cache ttl to 7 days, otherwise forever
-    // for data integrity and faster reads. A user is not likely to be checking his status after getting vaccinated
+
+    /**
+     * Cache pool, all caching of User model should be through this method. For the best outcome,
+     * an in-memory cache driver i.e. Redis should be used.
+     *
+     * If the status is VaccinationStatus::vaccinated, limit the cache ttl to 7 days, otherwise forever
+     * for data integrity and faster reads. A user is not likely to be checking his status after getting vaccinated.
+     *
+     * @param \App\Models\User $user
+     * @return string
+     */
     protected function pool(User $user): string
     {
         $cacheKey = self::getCacheKey($user);
