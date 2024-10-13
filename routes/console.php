@@ -12,5 +12,6 @@ Artisan::command('inspire', function () {
 
 // Increase the batch size as needed or, as the server can handle
 // This determines the no of users to be appointed a vaccination schedule in a batch
+// Also, we may adjust the cron timer as needed.
 Schedule::job(new BatchScheduleVaccineAppointmentJob(batchSize: 250))
     ->everyTwoSeconds();
