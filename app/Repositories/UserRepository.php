@@ -218,6 +218,41 @@ class UserRepository
         }
     }
 
+    /**
+     * Efficiently pull metadata for a user
+     *
+     * @param \App\Models\User $user
+     * @return mixed
+     */
+    public function withMetadata(User $user)
+    {
+        $cacheKey = self::getCacheKey($user) . ":metadata";
+
+        // Metadata is only meaningful if it's currently on scheduled status
+        if (!$user->status === VaccinationStatus::SCHEDULED) {
+            return null;
+        }
+
+        // Return if we have the metadata cached already
+        $cachedData = Cache::get($cacheKey);
+        if ($cachedData) {
+            return $cachedData;
+        }
+
+        // Otherwise load it and cache it
+        $user->loadMissing([
+            'vaccineCenter:id,name,address',
+            'vaccineAppointment:id,date,user_id,status',
+        ]);
+
+        // Since we can assume that all user will be vaccinated on the scheduled date,
+        // cache the data for that period of time plus a bit more.
+        $ttl = $user->vaccineAppointment->date->addDays(2);
+
+        Cache::remember($cacheKey, $ttl, fn() => $user);
+
+        return $user;
+    }
 
     /**
      * Cache pool, all caching of User model should be through this method. For the best outcome,

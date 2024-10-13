@@ -30,6 +30,7 @@ class VaccineCenterDailyUsage extends Model
     protected function casts(): array
     {
         return [
+            'date'        => 'date',
             'usage_count' => 'int',
         ];
     }

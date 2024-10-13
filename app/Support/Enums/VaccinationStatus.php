@@ -17,10 +17,20 @@ enum VaccinationStatus: int
     public function label(): string
     {
         return match ($this) {
-            self::NOT_REGISTERED => "Registered",
+            self::NOT_REGISTERED => "Not Registered",
             self::NOT_SCHEDULED  => "Not Scheduled",
             self::SCHEDULED      => "Scheduled",
             self::VACCINATED     => "Vaccinated",
+        };
+    }
+
+    public function badge(): string
+    {
+        return match ($this) {
+            self::NOT_REGISTERED => 'danger',
+            self::NOT_SCHEDULED  => 'info',
+            self::SCHEDULED      => 'warning',
+            self::VACCINATED     => 'success',
         };
     }
 }

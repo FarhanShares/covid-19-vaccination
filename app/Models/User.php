@@ -26,17 +26,6 @@ class User extends Authenticatable
         'email',
         'status',
         'vaccine_center_id',
-        'vaccine_appointment_id',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
     ];
 
     /**

@@ -31,6 +31,7 @@ class VaccineAppointment extends Model
     protected function casts(): array
     {
         return [
+            'date'   => 'date',
             'status' => AppointmentStatus::class,
         ];
     }
