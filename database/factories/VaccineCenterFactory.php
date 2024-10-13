@@ -17,9 +17,9 @@ class VaccineCenterFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->city,
+            'name' =>  "{$this->faker->city} Vaccine Center",
             'address' => $this->faker->address,
-            'daily_capacity' => $this->faker->numberBetween(50, 1000),
+            'daily_capacity' => $this->faker->numberBetween(50, 100),
         ];
     }
 }
