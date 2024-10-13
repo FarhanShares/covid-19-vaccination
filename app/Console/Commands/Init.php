@@ -28,6 +28,7 @@ class Init extends Command
      */
     public function handle()
     {
+        $this->info('Clearing cache...');
         Artisan::call('optimize:clear');
 
         $this->info('Starting with a fresh migration...');
@@ -37,10 +38,12 @@ class Init extends Command
         $this->info('Seeding 20 vaccine centers with random data...');
         VaccineCenter::factory()->count(20)->create();
 
-        $this->info('Seeding 50 users with random data...');
-        User::factory()->count(50)->create();
+        $this->info('Seeding 5000 users with random data...');
+        User::factory()->count(5000)->create();
 
+        $this->info('Optimizing...');
+        Artisan::call('optimize');
 
-        // Artisan::call('optimize');
+        $this->alert('Initialization completed! - Farhan Israq');
     }
 }
