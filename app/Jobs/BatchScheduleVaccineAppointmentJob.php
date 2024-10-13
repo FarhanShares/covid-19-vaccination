@@ -15,13 +15,14 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
     use Queueable;
 
     protected UserRepository $userRepository;
+
     protected BookingService $bookingService;
 
     /**
      * Create a new job instance.
      */
     public function __construct(
-        public int $batchSize = 100,
+        public int $batchSize = 250,
     ) {
         $this->userRepository = new UserRepository();
         $this->bookingService = new BookingService();
