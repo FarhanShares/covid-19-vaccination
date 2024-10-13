@@ -4,8 +4,11 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Jobs\StoreUserJob;
+use Illuminate\Support\Carbon;
+use App\Models\VaccineAppointment;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Auth\Events\Registered;
+use App\Support\Enums\AppointmentStatus;
 use App\Support\Enums\VaccinationStatus;
 
 /**
@@ -189,6 +192,24 @@ class UserRepository
         return User::query()
             ->with('vaccineCenter:id,daily_capacity')
             ->where('status', VaccinationStatus::NOT_SCHEDULED->value)
+            ->orderBy('created_at',  'asc') // First come, first served
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Get the appointment collection with users who hasn't yet received
+     * a notification for vaccination and has the schedule tomorrow.
+     *
+     * @param int $limit
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function notifiableToday(int $limit = 100)
+    {
+        return VaccineAppointment::query()
+            ->with('user:id,name,email')
+            ->where('status', AppointmentStatus::SCHEDULED->value)
+            ->whereDate('date', '=', Carbon::tomorrow()->startOfDay()->toDateString())
             ->orderBy('created_at',  'asc') // First come, first served
             ->limit($limit)
             ->get();

@@ -8,13 +8,14 @@ namespace App\Support\Enums;
  */
 enum AppointmentStatus: int
 {
-    case SCHEDULED      = 0;
-    case VACCINATED     = 1;
-
+    case NOTIFIED       = 1;
+    case SCHEDULED      = 2;
+    case VACCINATED     = 3;
 
     public function label(): string
     {
         return match ($this) {
+            self::NOTIFIED       => "Notified",
             self::SCHEDULED      => "Scheduled",
             self::VACCINATED     => "Vaccinated",
         };

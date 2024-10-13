@@ -4,6 +4,7 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
+use App\Jobs\BatchSendAppointmentNotifications;
 use App\Jobs\BatchScheduleVaccineAppointmentJob;
 
 Artisan::command('inspire', function () {
@@ -14,4 +15,7 @@ Artisan::command('inspire', function () {
 // This determines the no of users to be appointed a vaccination schedule in a batch
 // Also, we may adjust the cron timer as needed.
 Schedule::job(new BatchScheduleVaccineAppointmentJob(batchSize: 250))
+    ->everyTenSeconds();
+
+Schedule::job(new BatchSendAppointmentNotifications(batchSize: 250))
     ->everyTwoSeconds();

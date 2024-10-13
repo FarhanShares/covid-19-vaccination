@@ -40,6 +40,17 @@ class User extends Authenticatable
         ];
     }
 
+    public function routeNotificationForMail(): string
+    {
+        return $this->email;
+    }
+
+    public function routeNotificationForTwilio(): string
+    {
+        // Currently none of these exists
+        return (string) $this->country_code . $this->phone_number;
+    }
+
     public function vaccineCenter(): BelongsTo
     {
         return $this->belongsTo(VaccineCenter::class);
