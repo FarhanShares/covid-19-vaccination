@@ -22,10 +22,18 @@ class Register extends Component
 
     public function mount(): void
     {
-        // For efficiency
-        // TODO check if cache exists, separate this maybe, handle invalidation
-        Cache::remember('vc_options', now()->addDay(), function () {
-            return VaccineCenter::query()->select('id', 'name')->pluck('name', 'id')->toArray();
+        /**
+         * For efficiency, we are caching the data for longer period of times assuming that
+         * vaccine centers are not occasionally added or updated.
+         *
+         * The cache should be invalidated when create or update event occurs.
+         * Doable, but skipping it for now.
+         */
+        Cache::remember('vc_options', now()->addDays(10), function () {
+            return VaccineCenter::query()
+                ->select('id', 'name')
+                ->pluck('name', 'id')
+                ->toArray();
         });
 
         $this->vaccineCenters = Cache::get('vc_options');
