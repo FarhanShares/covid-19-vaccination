@@ -167,11 +167,12 @@ class UserRepository
         array $ids,
         VaccinationStatus $status,
     ): void {
-        // Update the user status
+        // Update the users' status
         User::whereIn('id', $ids)->update(['status' => $status->value]);
 
         // Refresh the cache pool
         $users = User::whereIn('id', $ids)->get();
+
         $users->each(function (User $user) use ($status) {
             $this->pool($user);
         });
@@ -243,10 +244,10 @@ class UserRepository
         }
 
         // Return if we have the metadata cached already
-        // $cachedData = Cache::get($cacheKey);
-        // if ($cachedData) {
-        //     return $cachedData;
-        // }
+        $cachedData = Cache::get($cacheKey);
+        if ($cachedData) {
+            return $cachedData;
+        }
 
         // Otherwise load it and cache it
         $user->loadMissing([
@@ -267,8 +268,9 @@ class UserRepository
      * Cache pool, all caching of User model should be through this method. For the best outcome,
      * an in-memory cache driver i.e. Redis should be used.
      *
-     * If the status is VaccinationStatus::vaccinated, limit the cache ttl to 7 days, otherwise forever
-     * for data integrity and faster reads. A user is not likely to be checking his status after getting vaccinated.
+     * If the status is VaccinationStatus::vaccinated, limit the cache ttl to 3 days, otherwise longer
+     * for data integrity and faster reads. A user is not likely to be checking his status
+     * after getting vaccinated.
      *
      * @param \App\Models\User $user
      * @return string
@@ -276,12 +278,11 @@ class UserRepository
     protected function pool(User $user): string
     {
         $cacheKey = self::getCacheKey($user);
+        $ttl = $user?->status === VaccinationStatus::VACCINATED
+            ? now()->addDays(3)
+            : now()->addDays(365); // The server should process the user within this moment for newly registered users
 
-        if ($user->status === VaccinationStatus::VACCINATED) {
-            Cache::put($cacheKey, $user, now()->addDays(7));
-        } else {
-            Cache::rememberForever($cacheKey, fn() => $user);
-        }
+        Cache::put($cacheKey, $user, $ttl);
 
         return $cacheKey;
     }
