@@ -216,6 +216,22 @@ class UserRepository
     }
 
     /**
+     * Get appointments that are past the vaccination date but are still in the NOTIFIED status.
+     *
+     * @param int $limit
+     */
+    public function pastAppointments(int $limit = 100)
+    {
+        return VaccineAppointment::query()
+            ->select(['id,user_id,date'])
+            ->where('status', AppointmentStatus::NOTIFIED->value)
+            ->whereDate('date', '<', now()->startOfDay()->toDateString()) // appointments before today
+            ->orderBy('date', 'asc') // Oldest appointments first
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
      * Helper method for consistent cache key generation or retrieval
      *
      * @param int|User $user Integer NID or User model

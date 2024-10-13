@@ -4,6 +4,7 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
+use App\Jobs\BatchUpdateToVaccinatedStatus;
 use App\Jobs\BatchSendAppointmentNotifications;
 use App\Jobs\BatchScheduleVaccineAppointmentJob;
 
@@ -23,6 +24,12 @@ Artisan::command('inspire', function () {
 
 Schedule::job(new BatchScheduleVaccineAppointmentJob(batchSize: 250))
     ->everyTenSeconds();
+// ->everyFifteenMinutes();
 
 Schedule::job(new BatchSendAppointmentNotifications(batchSize: 250))
     ->everyTwoSeconds();
+// ->dailyAt('21:00');
+
+Schedule::job(new BatchUpdateToVaccinatedStatus(batchSize: 250))
+    ->everyFifteenSeconds();
+// ->dailyAt('00:00');
