@@ -74,7 +74,10 @@ class UserRepository
     public function existsInDB(int|User $user, bool $useCache = false): bool
     {
         $nid  = $user instanceof User ? $user->id : $user;
-        $user = User::where('nid', $nid)->first();
+        $user = User::query()
+            ->select($useCache ? ['id', 'nid'] : '*')
+            ->where('nid', $nid)
+            ->first();
 
         if ($user) {
             if ($useCache) {
@@ -126,7 +129,7 @@ class UserRepository
         $this->pool($user);
 
         // Push to queue to be saved in the database asynchronously
-        dispatch(new StoreUserJob($user));
+        dispatch(new StoreUserJob($user->nid));
     }
 
     /**
@@ -209,11 +212,17 @@ class UserRepository
      * @param \App\Models\User $user
      * @return void
      */
-    protected function store(User $user)
+    public function store(int $nid)
     {
-        if (!$this->existsInDB($user)) {
+        if (!$this->existsInDB($nid)) {
+            $cacheKey = $this->getCacheKey($nid);
+
+            $user = Cache::get($cacheKey); // We may throw exception if not found
+            $user->status = VaccinationStatus::NOT_SCHEDULED;
+
             $user->save();
             $this->pool($user);
+
             event(new Registered($user));
         }
     }
@@ -234,10 +243,10 @@ class UserRepository
         }
 
         // Return if we have the metadata cached already
-        $cachedData = Cache::get($cacheKey);
-        if ($cachedData) {
-            return $cachedData;
-        }
+        // $cachedData = Cache::get($cacheKey);
+        // if ($cachedData) {
+        //     return $cachedData;
+        // }
 
         // Otherwise load it and cache it
         $user->loadMissing([
