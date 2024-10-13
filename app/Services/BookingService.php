@@ -59,8 +59,6 @@ class BookingService
         } while (true);
     }
 
-    //
-    //
     /**
      * UseDate increases the "vaccine center usage count" which is stored as Redis data for efficiency.
      * Later in flush method, the count can be persisted in batch and, the Redis data will be flushed.
