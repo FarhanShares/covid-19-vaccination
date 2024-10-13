@@ -36,7 +36,7 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
         $users = $this->userRepository->unappointed($this->batchSize);
 
         foreach ($users as $user) {
-            // Find the most close available date for the chosen vaccine center
+            // Find the closest available date for the chosen vaccine center
             // Booking service along with user repository takes care of the first come, first served principle
             $appointmentDate = $this->bookingService->findDate($user->vaccineCenter);
 
@@ -44,7 +44,7 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
             $appointment = VaccineAppointment::create([
                 'date'              => $appointmentDate,
                 'user_id'           => $user->id,
-                'vaccine_center_id' => $user->vaccine_center_id, // maybe we don't even need this
+                'vaccine_center_id' => $user->vaccine_center_id,
                 'status'            => AppointmentStatus::SCHEDULED,
             ]);
 
@@ -52,7 +52,6 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
             $this->userRepository->updateStatus(
                 user: $user,
                 status: VaccinationStatus::SCHEDULED,
-                appointmentId: $appointment->id, // maybe we don't even need this
             );
 
             // Notify the booking service that we have used the date

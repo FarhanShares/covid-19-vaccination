@@ -15,7 +15,7 @@ use App\Support\Enums\VaccinationStatus;
 class UserRepository
 {
     /**
-     * A session (key: REGISTRATION_COMPLETED_SESSION) should be flashed containing User NID
+     * A session (KEY:REGISTRATION_COMPLETED_SESSION) should be flashed containing User NID
      * once the registration has been completed successfully. This is primarily used
      * for displaying a welcome screen / notification to the new user.
      *
@@ -100,15 +100,16 @@ class UserRepository
      * @param int $appointmentId
      * @return void
      */
-    public function updateStatus(int|User $user, VaccinationStatus $status, int $appointmentId): void
-    {
+    public function updateStatus(
+        int|User $user,
+        VaccinationStatus $status,
+    ): void {
         if (is_int($user)) {
             $user = $this->findByNid($user);
         }
 
         if ($user) {
             $user->status = $status->value;
-            $user->vaccine_appointment_id = $appointmentId;
             $user->save(); // Save to DB
 
             // Refresh the cache with the updated status

@@ -152,7 +152,6 @@ class Register extends Component
         // Adding additional necessary data
         $validated['status'] = VaccinationStatus::NOT_SCHEDULED->value;
         $validated['vaccine_center_id'] = $validated['vaccineCenter'];
-        $validated['vaccine_appointment_id'] = null;
 
         return $validated;
     }

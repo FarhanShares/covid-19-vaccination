@@ -37,7 +37,6 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'vaccine_center_id' => $vid,
-            'vaccine_appointment_id' => null,
         ];
     }
 }
