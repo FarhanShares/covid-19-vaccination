@@ -15,7 +15,7 @@ class BookingService
 
     public function __construct()
     {
-        $this->uniqueId = Str::orderedUuid();
+        $this->uniqueId = Str::orderedUuid()->toString();
     }
 
     public function findDate(
@@ -38,7 +38,7 @@ class BookingService
 
         // Loop to find the next available date
         do {
-            // Skip weekends
+            // Skip weekends, set APP_TIMEZONE="Asia/Dhaka" in env var to use Bangladeshi local time
             if ($this->isWeekend($nextDate)) {
                 $nextDate->addDay();
                 continue;
@@ -59,17 +59,22 @@ class BookingService
         } while (true);
     }
 
-    // Increment the vaccine center usage counter in Redis for efficiency
+    // Increment the vaccine center usage counter as Redis data for efficiency
+    // Later in flush method, the count will be persisted in batch and redis data will be cleared
     public function useDate(
         Carbon $date,
         int $vaccineCenterId,
     ): void {
         $key = $this->getDailyUsageKey($date, $vaccineCenterId);
 
+        // Though we do flush, but, maybe we can even set a 3 days ttl for the key.
+        // the ttl value should be based on server config, if we are confident that the server can
+        // process this job without exceeding 3 days, that's fine. Otherwise increase or, do not even set it.
         Redis::incr($key, 1);
     }
 
     // After processing all users, batch update the VaccineCenterDailyUsage table
+    // and clear all temporary data
     public function flush(): void
     {
         // Get all vaccine center keys for this batch from Redis
@@ -91,8 +96,9 @@ class BookingService
                 vaccineCenter: (int) $vaccineCenterId,
             );
 
-            // Delete the redis data as we won't need it anymore
+            // Delete the redis and cached data as we won't need it anymore
             Redis::del($key);
+            Cache::forget("db:$key");
         }
     }
 
@@ -108,31 +114,31 @@ class BookingService
         Carbon $date,
         int $vaccineCenterId,
     ): int {
-        // dd($vaccineCenterId);
         // Use Redis to get the current appointment count for this center and date (job-specific count)
         $redisKey = $this->getDailyUsageKey($date, $vaccineCenterId);
         $redisAppointmentsForDate = Redis::get($redisKey) ?? 0;
-        // dd($redisAppointmentsForDate);
-        // Retrieve and cache the count from DB to improve performance
-        // $dbUsage = Cache::remember("db:$redisKey", now()->addDay(), function () use ($vaccineCenterId, $date) {
-        //     return VaccineCenterDailyUsage::where('vaccine_center_id', $vaccineCenterId)
-        //         ->whereDate('date', $date->startOfDay()->toDateString())
-        //         ->first();
-        // });
 
-        // Using uncached version for debugging
-        $dbUsage = VaccineCenterDailyUsage::where('vaccine_center_id', $vaccineCenterId)
-            ->whereDate('date', $date->startOfDay()->toDateString())
-            ->first();
+        // Retrieve and cache the count from DB to improve performance, use in-memory cache driver i.e. Redis
+        // for efficiency and scalability.
+        // the ttl value should be based on server config, if we are confident that the server can
+        // process this job without exceeding 3 days, that's fine. Otherwise increase or, do not even set it.
+        $dbUsage = Cache::remember(
+            "db:$redisKey",
+            now()->addDays(3),
+            function () use ($vaccineCenterId, $date) {
+                return VaccineCenterDailyUsage::where('vaccine_center_id', $vaccineCenterId)
+                    ->whereDate('date', $date->startOfDay()->toDateString())
+                    ->first();
+            }
+        );
 
         $dbAppointmentsForDate = $dbUsage?->usage_count ?? 0;
-        $total = (int) $redisAppointmentsForDate + (int) $dbAppointmentsForDate;
-        // \Log::info("$vaccineCenterId : {$date->startOfDay()->toDateString()} : redis $redisAppointmentsForDate : db: $dbAppointmentsForDate : total $x");
-        // Combine both Redis counter and DB count
-        return $total;
+
+        return (int) $redisAppointmentsForDate + (int) $dbAppointmentsForDate;
     }
 
     // Helper function to check if a date is a weekend
+    // Set APP_TIMEZONE="Asia/Dhaka" in env var to use Bangladeshi local time
     public function isWeekend(Carbon $date): bool
     {
         return in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY]);
