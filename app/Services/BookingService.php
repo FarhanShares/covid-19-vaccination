@@ -75,7 +75,7 @@ class BookingService
 
     // After processing all users, batch update the VaccineCenterDailyUsage table
     // and clear all temporary data
-    public function flush(): void
+    public function flush(bool $persist = true): void
     {
         // Get all vaccine center keys for this batch from Redis
         $keys = Redis::keys("$this->uniqueId:*");
@@ -89,12 +89,14 @@ class BookingService
             // Get the usage count from Redis
             $usageCount = Redis::get($key) ?? 0;
 
-            // Update the VaccineCenterDailyUsage table in the database
-            VaccineCenterDailyUsage::incrementUsage(
-                date: Carbon::parse($date),
-                amount: (int) $usageCount,
-                vaccineCenter: (int) $vaccineCenterId,
-            );
+            if ($persist) {
+                // Persist the changes / count table in the database
+                VaccineCenterDailyUsage::incrementUsage(
+                    date: Carbon::parse($date),
+                    amount: (int) $usageCount,
+                    vaccineCenter: (int) $vaccineCenterId,
+                );
+            }
 
             // Delete the redis and cached data as we won't need it anymore
             Redis::del($key);
