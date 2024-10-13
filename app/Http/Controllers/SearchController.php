@@ -59,7 +59,7 @@ class SearchController extends Controller
         $linkTitle       = 'Search Again? Click here.';
 
         if ($status === VaccinationStatus::NOT_REGISTERED) {
-            $linkHref    = route('search');
+            $linkHref    = route('register');
             $linkTitle   = 'Register to get vaccinated from a nearby location.';
         }
 
