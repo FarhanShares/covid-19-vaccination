@@ -63,19 +63,16 @@
                 <h2 class="text-xl font-semibold text-black dark:text-white">Farhan Israq</h2>
 
                 <p class="mt-4 text-sm/relaxed">
-                    Laravel's robust library of first-party tools and libraries, such as <a href="https://forge.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]">Forge</a>,
-                    <a href="https://vapor.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Vapor</a>,
-                    <a href="https://nova.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Nova</a>,
-                    <a href="https://envoyer.io" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Envoyer</a>,
-                    and <a href="https://herd.laravel.com" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Herd</a>
-                    help you take your projects to the next level. Pair them with powerful open source
-                    libraries like <a href="https://laravel.com/docs/billing" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Cashier</a>,
-                    <a href="https://laravel.com/docs/dusk" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Dusk</a>,
-                    <a href="https://laravel.com/docs/broadcasting" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Echo</a>,
-                    <a href="https://laravel.com/docs/horizon" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Horizon</a>,
-                    <a href="https://laravel.com/docs/sanctum" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Sanctum</a>,
-                    <a href="https://laravel.com/docs/telescope" class="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white">Telescope</a>,
-                    and more.
+                    With over 4.5 years of experience as a Full-stack Developer,
+                    I’ve built innovative platforms like <x-ref-url href="https://vetsafecare.com">VetSafeCare</x-ref-url>
+                    and <x-ref-url href="https://rateitall.com">RateItAll</x-ref-url>,
+                    excelling in both frontend and backend development.
+                    My expertise includes frameworks such as Laravel and libraries like
+                    <x-ref-url href="https://github.com/farhanshares/laravel-mediaman">MediaMan</x-ref-url>.
+                    I’m adept at building seamless CI/CD pipelines, containerizing with Docker,
+                    and deploying to the cloud. I also specialize in Vue.js, TypeScript, Flutter, and more.
+
+                    Connect with me on <x-ref-url href="https://www.linkedin.com/in/farhanshares/">LinkedIn</x-ref-url> to collaborate.
                 </p>
             </div>
         </div>
