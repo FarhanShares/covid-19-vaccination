@@ -56,7 +56,7 @@ class BatchScheduleVaccineAppointmentJob implements ShouldQueue
                 'date'              => $appointmentDate,
                 'user_id'           => $user->id,
                 'vaccine_center_id' => $user->vaccine_center_id,
-                'status'            => AppointmentStatus::SCHEDULED,
+                'status'            => AppointmentStatus::SCHEDULED->value,
                 'updated_at'        => now(),
                 'created_at'        => now(),
             ]);

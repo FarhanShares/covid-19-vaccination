@@ -44,6 +44,6 @@ class BatchSendAppointmentNotifications implements ShouldQueue
         // Update the appointment status
         VaccineAppointment::query()
             ->whereIn("id", $appointments->pluck('id')->toArray())
-            ->update(['status' => AppointmentStatus::NOTIFIED]);
+            ->update(['status' => AppointmentStatus::NOTIFIED->value]);
     }
 }

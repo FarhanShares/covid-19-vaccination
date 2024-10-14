@@ -40,7 +40,7 @@ class BatchUpdateToVaccinatedStatus implements ShouldQueue
 
         VaccineAppointment::query()
             ->whereIn("user_id", $userIds)
-            ->update(['status' => AppointmentStatus::VACCINATED]);
+            ->update(['status' => AppointmentStatus::VACCINATED->value]);
 
         $this->userRepository->updateManyStatus($userIds, VaccinationStatus::VACCINATED);
     }
