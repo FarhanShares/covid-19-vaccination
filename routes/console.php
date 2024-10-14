@@ -13,23 +13,20 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 /**
- * <<Notes by Farhan Israq>>
- * The notification job needs to be set at 9 PM each day as per the task.
- * The Schedule appointment job can be run in 15 mins interval or as needed.
+ * Increase the batch size as needed or, as the server can handle.
+ * Batch size determines the no of users to be processed at a time.
  *
- * Increase the batch size as needed or, as the server can handle
- * This determines the no of users to be appointed a vaccination schedule in a batch
  * Also, we may adjust the cron timer as needed.
  */
 
 Schedule::job(new BatchScheduleVaccineAppointmentJob(batchSize: 250))
-    ->everyTenSeconds();
-// ->everyFifteenMinutes();
+    // ->everyTenSeconds();
+    ->hourly();
 
 Schedule::job(new BatchSendAppointmentNotifications(batchSize: 250))
-    ->everyTwoSeconds();
-// ->dailyAt('21:00');
+    // ->everyTenSeconds();
+    ->dailyAt('21:00');
 
 Schedule::job(new BatchUpdateToVaccinatedStatus(batchSize: 250))
-    ->everyFifteenSeconds();
-// ->dailyAt('00:00');
+    // ->everyFifteenMinutes();
+    ->dailyAt('00:00');
