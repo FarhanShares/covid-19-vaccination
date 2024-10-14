@@ -24,25 +24,29 @@ Follow these steps to set up and run the project:
     cp .env.example .env
     ```
     
-3. Ensure Docker is running with Docker Compose installed.
+3. Ensure Laravel 11 compatible PHP & Composer are installed and install the Composer dependencies
+   ```bash
+    composer install
+    ```
+   
+4. Ensure Docker is running with Docker Compose installed.
 
-4. Start the application using Laravel Sail:
+5. Start the application using Laravel Sail:
     ```bash
     ./vendor/bin/sail up -d
     ```
-5. Install the dependencies, build frontend assets and generate the application key:
-   ```bash
-    ./vendor/bin/sail composer install
-    ```
-   ```bash
+    
+6. Install the NPM dependencies.
+    ```bash
     ./vendor/bin/sail npm install
     ```
+   
+7. Build frontend assets.
+  
    ```bash
     ./vendor/bin/sail npm run build
     ```
-   ```bash
-    ./vendor/bin/sail php artisan key:generate
-    ```
+  
 7. Migration, Seeding and Initialization: The command will migrate, seed and optimize the app at once
    ```bash
    ./vendor/bin/sail php artisan app:init
