@@ -8,9 +8,9 @@ namespace App\Support\Enums;
  */
 enum AppointmentStatus: int
 {
+    case SCHEDULED      = 0;
     case NOTIFIED       = 1;
-    case SCHEDULED      = 2;
-    case VACCINATED     = 3;
+    case VACCINATED     = 2;
 
     public function label(): string
     {
