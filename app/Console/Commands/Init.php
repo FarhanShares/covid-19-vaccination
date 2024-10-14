@@ -31,12 +31,13 @@ class Init extends Command
         $this->info('Starting initialization process...');
         $this->line('');
 
-        $this->info('1. Clearing cache...');
+        $this->info('1. Clearing cache and starting fresh...');
+        Artisan::call('key:generate');
         Artisan::call('optimize:clear');
         $this->info(Artisan::output());
         $this->line('');
 
-        $this->info('2. Starting with a fresh migration...');
+        $this->info('2. Running a fresh migration...');
         Artisan::call('migrate:fresh --force');
         $this->info(Artisan::output());
 
