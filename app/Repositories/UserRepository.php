@@ -223,10 +223,10 @@ class UserRepository
     public function pastAppointments(int $limit = 100)
     {
         return VaccineAppointment::query()
-            ->select(['id,user_id,date'])
-            ->where('status', AppointmentStatus::NOTIFIED->value)
-            ->whereDate('date', '<', now()->startOfDay()->toDateString()) // appointments before today
-            ->orderBy('date', 'asc') // Oldest appointments first
+            ->select(['id', 'user_id', 'date', 'status'])
+            ->where('status', AppointmentStatus::NOTIFIED->value) // Who has been notified before the scheduled date
+            ->whereDate('date', '<', now()->startOfDay()->toDateString()) // Appointments before today
+            ->orderBy('date', 'asc') // Oldest appointments first (btw, date column is indexed)
             ->limit($limit)
             ->get();
     }
