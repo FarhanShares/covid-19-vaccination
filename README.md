@@ -19,38 +19,43 @@ Follow these steps to set up and run the project:
     git clone git@github.com:FarhanShares/covid-19-vaccination.git
     ```
 
-2. Navigate to the project directory, copy the `.env.example` to `.env`, and generate the application key:
+2. Navigate to the project directory (`cd <project_directory>`) and copy the `.env.example` to `.env`:
     ```bash
-    cd <project_directory>
     cp .env.example .env
-    php artisan key:generate
-    ```
-
-3. Install the dependencies and build frontend assets:
-    ```bash
-    composer install
-    npm run build
     ```
     
-4. Ensure Docker is running with Docker Compose installed.
+3. Ensure Docker is running with Docker Compose installed.
 
-5. Start the application using Laravel Sail:
+4. Start the application using Laravel Sail:
     ```bash
     ./vendor/bin/sail up -d
     ```
-6. Migration, Seeding and Initialization: The command will migrate, seed and optimize the app at once
+5. Install the dependencies, build frontend assets and generate the application key:
+   ```bash
+    ./vendor/bin/sail composer install
+    ```
+   ```bash
+    ./vendor/bin/sail npm install
+    ```
+   ```bash
+    ./vendor/bin/sail npm run build
+    ```
+   ```bash
+    ./vendor/bin/sail php artisan key:generate
+    ```
+7. Migration, Seeding and Initialization: The command will migrate, seed and optimize the app at once
    ```bash
    ./vendor/bin/sail php artisan app:init
    ```
 
-7. Once the Docker build completes, run the following in separate terminal sessions:
+8. Once the Docker build completes, run the following in separate terminal sessions:
     - First session (for queue worker):
       ```bash
-      ./vendor/bin/sail queue:work
+      ./vendor/bin/sail php artisan queue:work
       ```
     - Second session (for scheduler):
       ```bash
-      ./vendor/bin/sail schedule:work
+      ./vendor/bin/sail php artisan schedule:work
       ```
 
 Now the project is ready, and you can start interacting with it! 
