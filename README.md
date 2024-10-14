@@ -103,7 +103,9 @@ That’s it! For more details, check out `app/Notifications/AppointmentNotificat
 ## Demonstrating Diverse Skills
 To showcase the range of my abilities, I utilized **Livewire** for the `/register` route and traditional **Controllers** for the `/search` route. I also worked with **AlpineJS** components for frontend interactions. I wish I could’ve demonstrated more like my skills with **Vue**, **TypeScript**, and **InertiaJS**.
 
-I'm well-versed in **Flutter**, **NodeJS**, **PHP**, **Vue**, **JS**, **TS**, **NuxtJS**, and even a bit of **React**. Always ready to work across stacks and adapt to different project needs.
+I'm well-versed in **Laravel/PHP**, **Flutter**, **NodeJS**, **VueJS**, **JavaScript**, **TypeScrupt**, **NuxtJS**, and even a bit of **ReactJS**. Always ready to work across stacks and adapt to different project needs.
+
+I've built an open-source Laravel package, the first release was 4 years ago and it's heavily unit tested: https://github.com/farhanshares/laravel-mediaman
 
 ## Further Improvements
 
@@ -114,6 +116,10 @@ If I had more time, here's what I would have done to take this project to the ne
 - **Advanced Caching Strategies**: Go beyond basic caching by implementing distributed caches with Redis for large-scale deployment and session sharing.
 
 - **Queue Optimization**: Adjust queue worker settings and explore using RabbitMQ for improved job processing efficiency in high-traffic scenarios.
+  
+-  **PostgreSQL**: I would have used PostgreSQL for its advantages in handling complex queries, better concurrency, and advanced indexing capabilities but opted for the default **Laravel Sail** setup with MySQL to streamline the development process.
+  
+- **Query Optimization** I plan to look into further query optimizations to enhance performance
   
 - **Write Unit Tests**: Implement thorough unit and feature tests, ensuring code quality and robustness, especially for critical processes like user registration and appointment scheduling.
 
