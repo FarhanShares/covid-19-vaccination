@@ -10,6 +10,50 @@ This program is designed with performance and scalability in mind, focusing on d
 |:--------------------------------------------:|:----------------------------------------:|:-----------------------------------------:|
 | **Registration Page**                        | **Search Page**                          | **Search Result**                         |
 
+## Installation Guide
+
+Follow these steps to set up and run the project:
+
+1. Clone the repository:
+    ```bash
+    git clone git@github.com:FarhanShares/covid-19-vaccination.git
+    ```
+
+2. Navigate to the project directory, copy the `.env.example` to `.env`, and generate the application key:
+    ```bash
+    cd <project_directory>
+    cp .env.example .env
+    php artisan key:generate
+    ```
+
+3. Install the dependencies and build frontend assets:
+    ```bash
+    composer install
+    npm run build
+    ```
+    
+4. Ensure Docker is running with Docker Compose installed.
+
+5. Start the application using Laravel Sail:
+    ```bash
+    ./vendor/bin/sail up -d
+    ```
+
+6. Once the Docker build completes, run the following in separate terminal sessions:
+    - First session (for queue worker):
+      ```bash
+      ./vendor/bin/sail queue:work
+      ```
+    - Second session (for scheduler):
+      ```bash
+      ./vendor/bin/sail schedule:work
+      ```
+
+Now the project is ready, and you can start interacting with it! 
+
+* Homepage: http://localhost
+* Mailpit (Email notification): http://localhost:8025
+
 
 ## Concept and Traffic
 This is a COVID-19 vaccination program app where the traffic is write-heavy during the initial user registration phase and transitions to a more read-heavy load as users frequently check vaccination statuses and appointments.
