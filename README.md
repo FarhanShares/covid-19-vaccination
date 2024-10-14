@@ -24,35 +24,28 @@ Follow these steps to set up and run the project:
     cp .env.example .env
     ```
     
-3. Ensure Laravel 11 compatible PHP & Composer are installed and install the Composer dependencies
-   ```bash
-    composer install
-    ```
+3. Ensure Laravel 11 compatible PHP & Composer along with Node (V20) are installed
    
-4. Ensure Docker is running with Docker Compose installed.
+4. Install the dependencies and build frontend assets:
+   ```bash
+   composer install
+   npm install
+   npm run build
+   ```
+   
+5. Ensure Docker is running with Docker Compose installed.
 
-5. Start the application using Laravel Sail:
+6. Start the application using Laravel Sail:
     ```bash
     ./vendor/bin/sail up -d
     ```
-    
-6. Install the NPM dependencies.
-    ```bash
-    ./vendor/bin/sail npm install
-    ```
-   
-7. Build frontend assets.
   
-   ```bash
-    ./vendor/bin/sail npm run build
-    ```
-  
-7. Migration, Seeding and Initialization: The command will migrate, seed and optimize the app at once
+7. Once the Docker build completes, run the initialization command. The command will migrate, seed and optimize the app at once:
    ```bash
    ./vendor/bin/sail php artisan app:init
    ```
 
-8. Once the Docker build completes, run the following in separate terminal sessions:
+8. Run the following commands in separate terminal sessions for queue and job processing:
     - First session (for queue worker):
       ```bash
       ./vendor/bin/sail php artisan queue:work
