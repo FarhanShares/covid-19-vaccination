@@ -1,6 +1,16 @@
 # Covid-19 Vaccination Program by Farhan Israq
 This program is designed with performance and scalability in mind, focusing on delivering a smooth user experience even under high traffic.
 
+## Screenshots
+
+![Homepage Screenshot](/public/screenshot-main.png)
+<p align="center" style="font-weight:500;">Homepage</p>
+
+| ![Registration Page](/public/screenshot-registration-page.png) | ![Search Page](/public/screenshot-search-page.png) | ![Search Result](/public/screenshot-search-result.png) |
+|:--------------------------------------------:|:----------------------------------------:|:-----------------------------------------:|
+| **Registration Page**                        | **Search Page**                          | **Search Result**                         |
+
+
 ## Concept and Traffic
 This is a COVID-19 vaccination program app where the traffic is write-heavy during the initial user registration phase and transitions to a more read-heavy load as users frequently check vaccination statuses and appointments.
 
