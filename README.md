@@ -104,3 +104,24 @@ That’s it! For more details, check out `app/Notifications/AppointmentNotificat
 To showcase the range of my abilities, I utilized **Livewire** for the `/register` route and traditional **Controllers** for the `/search` route. I also worked with **AlpineJS** components for frontend interactions. I wish I could’ve demonstrated more like my skills with **Vue**, **TypeScript**, and **InertiaJS**.
 
 I'm well-versed in **Flutter**, **NodeJS**, **PHP**, **Vue**, **JS**, **TS**, **NuxtJS**, and even a bit of **React**. Always ready to work across stacks and adapt to different project needs.
+
+## Further Improvements
+
+If I had more time, here's what I would have done to take this project to the next level:
+
+- **Integrate Meilisearch**: For blazing fast search across users and vaccination centers, optimizing search functionality beyond the basic DB queries.
+  
+- **Advanced Caching Strategies**: Go beyond basic caching by implementing distributed caches with Redis for large-scale deployment and session sharing.
+
+- **Queue Optimization**: Adjust queue worker settings and explore using RabbitMQ for improved job processing efficiency in high-traffic scenarios.
+  
+- **Write Unit Tests**: Implement thorough unit and feature tests, ensuring code quality and robustness, especially for critical processes like user registration and appointment scheduling.
+
+- **Refactor for Scalability**: Further refactoring the codebase for microservices architecture, breaking out key features like notifications and scheduling for better scalability.
+
+- **Frontend Frameworks**: If given more time, I would also demonstrate skills with **Vue**/**TypeScript**/**InertiaJS**, improving the frontend UX with a smoother, reactive UI.
+
+- **Deploy to Cloud**: Automate cloud deployments using **CI/CD pipelines** with services like Forge or Envoyer for real-world use.
+
+With more time, this would have been a more polished and enhanced app.
+
