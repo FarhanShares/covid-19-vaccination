@@ -38,8 +38,12 @@ Follow these steps to set up and run the project:
     ```bash
     ./vendor/bin/sail up -d
     ```
+6. Migration, Seeding and Initialization: The command will migrate, seed and optimize the app at once
+   ```bash
+   ./vendor/bin/sail php artisan app:init
+   ```
 
-6. Once the Docker build completes, run the following in separate terminal sessions:
+7. Once the Docker build completes, run the following in separate terminal sessions:
     - First session (for queue worker):
       ```bash
       ./vendor/bin/sail queue:work
